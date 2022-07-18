@@ -7,6 +7,26 @@ fn hello_pgx_strings() -> &'static str {
     "Hello, pgx_strings"
 }
 
+#[pg_extern]
+fn to_title(string: &str) -> String {
+    string
+        .split(' ')
+        .map(|word| {
+            word.chars()
+                .enumerate()
+                .map(|(i, c)| {
+                    if i == 0 {
+                        c.to_uppercase().to_string()
+                    } else {
+                        c.to_lowercase().to_string()
+                    }
+                })
+                .collect()
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
+}
+
 #[cfg(any(test, feature = "pg_test"))]
 #[pg_schema]
 mod tests {
@@ -17,6 +37,10 @@ mod tests {
         assert_eq!("Hello, pgx_strings", crate::hello_pgx_strings());
     }
 
+    #[pg_test]
+    fn test_to_title() {
+        assert_eq!("My Cool Extension", crate::to_title("my cool extension"));
+    }
 }
 
 #[cfg(test)]
