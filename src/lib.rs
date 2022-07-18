@@ -27,6 +27,25 @@ fn to_title(string: &str) -> String {
         .join(" ")
 }
 
+#[pg_extern]
+fn emojify(string: &str) -> String {
+    string
+        .split(' ')
+        .map(|word| {
+            let chars = word.chars().collect::<Vec<char>>();
+            match &chars[..] {
+                [':', shortcode @ .., ':'] => {
+                    emojis::get_by_shortcode(&shortcode.iter().collect::<String>())
+                        .unwrap()
+                        .to_string()
+                }
+                _ => word.to_string(),
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
+}
+
 #[cfg(any(test, feature = "pg_test"))]
 #[pg_schema]
 mod tests {
@@ -40,6 +59,15 @@ mod tests {
     #[pg_test]
     fn test_to_title() {
         assert_eq!("My Cool Extension", crate::to_title("my cool extension"));
+    }
+
+    #[pg_test]
+    fn test_emojify() {
+        assert_eq!("pgx is so cool 💯", crate::emojify("pgx is so cool :100:"));
+        assert_eq!(
+            "multiple emojis: 💯 👍",
+            crate::emojify("multiple emojis: :100: :+1:")
+        );
     }
 }
 
