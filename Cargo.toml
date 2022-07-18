@@ -16,6 +16,7 @@ pg14 = ["pgx/pg14", "pgx-tests/pg14" ]
 pg_test = []
 
 [dependencies]
+emojis = "0.4.0"
 pgx = "=0.4.5"
 
 [dev-dependencies]
