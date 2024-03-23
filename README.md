@@ -1,3 +1,8 @@
+> [!WARNING]
+> 
+> As `pgx` is being renamed to `pgrx`, this repository is outdated. Please
+> head over to https://github.com/kw7oe/pgrx_string_demo for the updated version.
+
 ## A example of PostgreSQL extensions using `pgx`
 
 This project includes a simple PostgreSQL extension written in
